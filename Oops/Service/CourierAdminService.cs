@@ -1,4 +1,5 @@
 ﻿using Oops.Entities;
+using Oops.Exceptions;
 using Oops.Repository;
 using System;
 using System.Collections.Generic;
@@ -46,19 +47,31 @@ namespace Oops.Service
             int Track = int.Parse(Console.ReadLine());
             if (Track != null)
             {
-                status = repository.RemoveCourierStaff(Track);
+                try
+                {
+                    status = repository.RemoveCourierStaff(Track);
+                    if (status)
+                    {
+                        Console.WriteLine("Employee successfully Removed.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to cremove Employee.");
+                    }
+                }
+                catch (InvalidEmployeeIdException ex)
+                {
+                    Console.WriteLine($"Invalid Employee ID Exception: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
 
 
             }
             // Add any additional logic, validation, or business rules here
-            if (status)
-            {
-                Console.WriteLine("Employee successfully Removed.");
-            }
-            else
-            {
-                Console.WriteLine("Failed to cremove Employee.");
-            }
+            
         }
         public void DeliveryReport()
         {

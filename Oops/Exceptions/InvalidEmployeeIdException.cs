@@ -8,8 +8,8 @@ namespace Oops.Exceptions
 {
     internal class InvalidEmployeeIdException:Exception
     {
-        public InvalidEmployeeIdException(string trackingNumber)
-        : base($"Tracking number '{trackingNumber}' not found.")
+        public InvalidEmployeeIdException(int employeeId)
+        : base($"Invalid employee ID '{employeeId}'. Employee does not exist in the system.")
         {
         }
     }

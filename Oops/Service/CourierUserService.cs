@@ -58,50 +58,69 @@ namespace Oops.Service
 
         public void TakeUserInputsAndGetOrderStatus()
         {
-            try
-            {
+            
                 string status = "Please Enter Valid Tracking Number";
                 Console.WriteLine("Enter TrackingNumber of the courier:");
                 string Track = Console.ReadLine();
-                if (Track != null)
+            if (Track != null)
+            {
+                try
                 {
                     status = repository.GetOrderStatus(Track);
-
+                    Console.WriteLine($"The Status of the Courier with Tracking Number:{Track} - {status}");
 
                 }
-                Console.WriteLine($"The Status of the Courier with Tracking Number:{Track} - {status}");
-
+                catch (TrackingNumberNotFoundException ex)
+                {
+                    Console.WriteLine($"Tracking Number Not Found Exception: {ex.Message}");
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
-            catch (TrackingNumberNotFoundException ex)
-            {
-                Console.WriteLine($"Tracking Number Not Found Exception: {ex.Message}");
-            }
-            catch (InvalidEmployeeIdException ex)
-            {
-                Console.WriteLine($"Invalid Employee ID Exception: {ex.Message}");
-            }
+            
+               
 
         }
+            
+
+        
         public void CancelOrder()
         {
             bool status = false;
             Console.WriteLine("Enter Tracking Number of the courier:");
             string Track = Console.ReadLine();
             if (Track != null)
+                
             {
-                status = repository.CancelOrder(Track); 
+                try
+                {
+                    status = repository.CancelOrder(Track); 
+                    if (status)
+
+                    {
+                        Console.WriteLine("Order successfully canceled.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to cancel the order. Please check the tracking number.");
+                    }
+                }
+                catch (TrackingNumberNotFoundException ex)
+                {
+                    Console.WriteLine($"Tracking Number Not Found Exception: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
 
 
             }
             // Add any additional logic, validation, or business rules here
-            if (status)
-            {
-                Console.WriteLine("Order successfully canceled.");
-            }
-            else
-            {
-                Console.WriteLine("Failed to cancel the order. Please check the tracking number.");
-            }
+            
         }
 
         public void AssignCourier()
@@ -115,19 +134,31 @@ namespace Oops.Service
             int eid = int.Parse(Console.ReadLine());
             if (Track != null && eid != null)
             {
-                status = repository.AssignCourier(Track, eid);
+                try
+                {
+                    status = repository.AssignCourier(Track, eid);
+
+                    if (status)
+                    {
+                        Console.WriteLine($"Assigned Employee to the Courier.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to cancel the order. Please check the tracking number.");
+                    }
+                }
+                catch (TrackingNumberNotFoundException ex)
+                {
+                    Console.WriteLine($"Tracking Number Not Found Exception: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
 
 
 
-            if (status)
-            {
-                Console.WriteLine($"Assigned Employee to the Courier.");
-            }
-            else
-            {
-                Console.WriteLine("Failed to cancel the order. Please check the tracking number.");
-            }
            
 
         }
@@ -139,19 +170,31 @@ namespace Oops.Service
             string Track = Console.ReadLine();
             if (Track != null )
             {
-                status = repository.MarkOrderDelivered(Track);
+                try
+                {
+                    status = repository.MarkOrderDelivered(Track);
+                    if (status)
+                    {
+                        Console.WriteLine("Courier Marked as Delivered.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to Deliver Courier.");
+                    }
+                }
+                catch (TrackingNumberNotFoundException ex)
+                {
+                    Console.WriteLine($"Tracking Number Not Found Exception: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
 
 
 
-            if (status)
-            {
-                Console.WriteLine("Courier Marked as Delivered.");
-            }
-            else
-            {
-                Console.WriteLine("Failed to Deliver Courier.");
-            }
+           
             
         }
         public void GetAssignedOrders()
@@ -164,27 +207,39 @@ namespace Oops.Service
             int eid = int.Parse(Console.ReadLine());
             if ( eid != null)
             {
-               strings= repository.GetAssignedOrders(eid);
-            }
-
-
-
-            if (strings.Count!= 0)
-            {
-                Console.WriteLine("TrackingNumbers of the Couriers Assigned to the Employee.");
-                for (int i=0; i<strings.Count; i++)
+                try
                 {
-                    Console.WriteLine($"{i+1}.{ strings[i]}");
+                    strings = repository.GetAssignedOrders(eid);
+                    if (strings.Count != 0)
+                    {
+                        Console.WriteLine("TrackingNumbers of the Couriers Assigned to the Employee.");
+                        for (int i = 0; i < strings.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}.{strings[i]}");
+                        }
+                    }
+                    else if (strings.Count == 0)
+                    {
+                        Console.WriteLine($" Employee Not Assigned to any Courier.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to load Employees");
+                    }
+                }
+                catch (InvalidEmployeeIdException ex)
+                {
+                    Console.WriteLine($"Invalid Employee ID Exception: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
             }
-            else if (strings.Count == 0)
-            {
-                Console.WriteLine($" Employee Not Assigned to any Courier.");
-            }
-            else
-            {
-                Console.WriteLine("Failed to load Employees");
-            }
+
+
+
+            
 
 
         }

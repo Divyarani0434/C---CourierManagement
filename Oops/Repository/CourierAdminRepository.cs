@@ -1,4 +1,5 @@
 ﻿using Oops.Entities;
+using Oops.Exceptions;
 using Oops.Utility;
 using System;
 using System.Collections.Generic;
@@ -65,6 +66,10 @@ namespace Oops.Repository
                     int rowsAffected = command.ExecuteNonQuery();
                     isRemoved = rowsAffected > 0;
                 }
+            }
+            if (isRemoved == false)
+            {
+                throw new InvalidEmployeeIdException(courierStaffId);
             }
 
             return isRemoved;
