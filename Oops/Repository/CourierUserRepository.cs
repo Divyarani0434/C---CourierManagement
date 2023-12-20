@@ -73,8 +73,7 @@ namespace Oops.Repository
         public string GetOrderStatus(string trackingNumber)
         {
             string status = "Unknown"; // Default status if not found
-            try
-            {
+            
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -94,12 +93,10 @@ namespace Oops.Repository
                         }
                     }
                 }
-            }
-            catch(Exception ex)
-            {
-                throw new TrackingNumberNotFoundException($"Tracking number '{trackingNumber}' not found.");
-
-            }
+                if(status == "Unknown")
+                {
+                throw new TrackingNumberNotFoundException(trackingNumber);
+                }
             return status;
         }
 
@@ -122,7 +119,10 @@ namespace Oops.Repository
                     isCanceled = rowsAffected > 0;
                 }
             }
-
+            if (isCanceled == false)
+            {
+                throw new TrackingNumberNotFoundException(trackingNumber);
+            }
             return isCanceled;
         }
 
@@ -146,8 +146,11 @@ namespace Oops.Repository
                     isAssigned = rowsAffected > 0;
                 }
             }
-
-            return isAssigned;
+            if (isAssigned == false)
+            {
+                throw new TrackingNumberNotFoundException(trackingNumber);
+            }
+           return isAssigned;
         }
 
         public bool MarkOrderDelivered(string trackingNumber)
@@ -168,6 +171,10 @@ namespace Oops.Repository
 
                     isMarkedDelivered = rowsAffected > 0;
                 }
+            }
+            if (isMarkedDelivered == false)
+            {
+                throw new TrackingNumberNotFoundException(trackingNumber);
             }
 
             return isMarkedDelivered;
@@ -195,6 +202,10 @@ namespace Oops.Repository
                         }
                     }
                 }
+            }
+            if (assignedOrders.Count() <= 0 )
+            {
+                throw new InvalidEmployeeIdException(employeeId);
             }
 
             return assignedOrders;
